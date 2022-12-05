@@ -19,33 +19,11 @@
 		eshell-hook))
   (add-hook mode (lambda() (display-line-numbers-mode 0))))
 
-;; << ----- Some universal key bindings   ------- >> 
-
-;; Escape as Quit!
+;; Some global keybindings
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-;; Easy switch buffer
 (global-set-key (kbd "C-M-j") 'counsel-switch-buffer)
-
-
-
-(require 'package)
-
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			 ("org" . "https//orgmode.org/elpa/")
-			 ("elpa" . "https://elpa.gnu.org/packages/")))
-
-(package-initialize)
-(unless package-archive-contents
-  (package-refresh-contents))
-
-;; If on non nix platforms
-(unless (package-installed-p 'use-package)
-  (package-install'use-package))
-
-
-(require 'use-package)
-(setq use-package-always-ensure t)
-
+	
+	
 ;; Ivy Setup
 (use-package ivy
   :diminish
@@ -118,6 +96,7 @@
   ([remap describe-variable] . counsel-describe-variable)
   ([remap describe-key] . helplful-key))
 
+(use-package general)
 ;; Icons!!
 (use-package all-the-icons)
 
@@ -132,5 +111,5 @@
   (add-to-list 'auto-mode-alist '("\\.vue\\'" .web.mode))
   (add-to-list 'auto-mode-alist '("\\.ts\\'" .web.mode))
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" .web.mode))
-  (add-hook 'web-mode-hook 'emmet-mode)
-  
+(add-hook 'web-mode-hook 'emmet-mode)
+
