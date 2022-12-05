@@ -19,8 +19,6 @@
 		eshell-hook))
   (add-hook mode (lambda() (display-line-numbers-mode 0))))
 
-
-
 ;; << ----- Some universal key bindings   ------- >> 
 
 ;; Escape as Quit!
@@ -122,3 +120,17 @@
 
 ;; Icons!!
 (use-package all-the-icons)
+
+(use-package emmet-mode
+  :ensure t)
+
+(use-package web-mode
+  :ensure t)
+  (add-to-list 'auto-mode-alist '("\\.html$" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.css?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.js\\'" .web-mode))
+  (add-to-list 'auto-mode-alist '("\\.vue\\'" .web.mode))
+  (add-to-list 'auto-mode-alist '("\\.ts\\'" .web.mode))
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" .web.mode))
+  (add-hook 'web-mode-hook 'emmet-mode)
+  
