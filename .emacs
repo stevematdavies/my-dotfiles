@@ -7,7 +7,17 @@
 (tool-bar-mode -1)
 (setq visible-bell t)
 
-(set-face-attribute 'default nil :font "Fira Code" :height 118)
+(set-face-attribute 'default nil :font "Source Code Pro" :height 116)
+(column-number-mode) ;; Set column numbers
+(global-display-line-numbers-mode t)
+
+;; Set line numbers, but only for programming modes
+(dolist (mode '(org-mode-hook
+		term-mode-hook
+		shell-mode
+		eshell-hook))
+  (add-hook mode (lambda() (display-line-numbers-mode 0))))
+
 
 ;; Escape as Quit!
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -55,3 +65,18 @@
   :ensure t
   :init (doom-modeline-mode 1)
   :custom ((doom-modeline-height 15)))
+
+(use-package doom-themes
+  :ensure t
+  :config
+  (setq doom-themes-enable-bold t
+	doom-themes-enable-italic t)
+  (load-theme 'doom-monokai-machine t)
+  (doom-themes-visual-bell-config)
+  (doom-themes-org-config))
+
+;; Rainbow delims!
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+
