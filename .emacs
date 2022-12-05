@@ -173,7 +173,7 @@
   :config
   (setq doom-themes-enable-bold t
 	doom-themes-enable-italic t)
-  (load-theme 'doom-monokai-machine t)
+  (load-theme 'doom-nord t)
   (doom-themes-visual-bell-config)
   (doom-themes-org-config))
 
