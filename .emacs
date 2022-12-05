@@ -11,6 +11,7 @@
 (column-number-mode) ;; Set column numbers
 (global-display-line-numbers-mode t)
 
+
 ;; Set line numbers, but only for programming modes
 (dolist (mode '(org-mode-hook
 		term-mode-hook
@@ -19,10 +20,15 @@
   (add-hook mode (lambda() (display-line-numbers-mode 0))))
 
 
+
+;; << ----- Some universal key bindings   ------- >> 
+
 ;; Escape as Quit!
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+;; Easy switch buffer
+(global-set-key (kbd "C-M-j") 'counsel-switch-buffer)
 
-;; (load-theme 'tango-dark)
+
 
 (require 'package)
 
