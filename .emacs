@@ -11,6 +11,8 @@
 (column-number-mode) ;; Set column numbers
 (global-display-line-numbers-mode t)
 
+;; set default browser for links and things
+(setq browse-url-browser-function 'browse-url-firefox)
 
 ;; Set line numbers, but only for programming modes
 (dolist (mode '(org-mode-hook
@@ -327,3 +329,8 @@
 (use-package magit
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+
+(use-package simple-httpd
+  :ensure t)
+
+(use-package org)
