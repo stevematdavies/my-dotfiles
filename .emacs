@@ -59,7 +59,24 @@
 	 ("C-k" . ivy-previous-line)
 	 ("C-d" . ivy-reverse-i-search-kill))
   :config
-  (ivy-mode ))
+  (ivy-mode 1))
+
+
+;; Ivy rich to sweeten ivy >>
+(use-package ivy-rich
+  :config
+  (setq ivy-rich-original-display-transformers-list nil)
+  :init
+  (ivy-rich-mode 1))
+
+(use-package counsel
+  :bind (("M-x" . counsel-M-x)
+	 ("C-x b" . counsel-ibuffer)
+	 ("C-x C-f" . counsel-find-file)
+	 :map minibuffer-local-map
+	 ("C-r" . 'counsel-minibuffer-history))
+  :config
+  (setq ivy-initial-inputs-alist nil))
 
 (use-package doom-modeline
   :ensure t
@@ -79,4 +96,21 @@
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
-
+(use-package which-key
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config
+  (setq which-key-idle-delay 1))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(counsel ivy-rich which-key use-package rainbow-delimiters ivy doom-themes doom-modeline)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
