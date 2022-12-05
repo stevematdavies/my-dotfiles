@@ -122,7 +122,7 @@
   :ensure t)
 
 (use-package web-mode :ensure t)
-s
+
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 (global-set-key (kbd "C-M-j") 'counsel-switch-buffer)
 	
@@ -207,7 +207,7 @@ s
   :ensure t)
 
 (use-package web-mode :ensure t)
-s
+
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 (global-set-key (kbd "C-M-j") 'counsel-switch-buffer)
 	
@@ -313,9 +313,15 @@ s
 (use-package projectile
   :ensure t
   :pin melpa-stable
+  :custom ((projectile-completion-system 'ivy))
   :init
   (projectile-mode +1)
   :bind (:map projectile-mode-map
               ("s-p" . projectile-command-map)
               ("C-c p" . projectile-command-map)))
-  
+
+(use-package counsel-projectile
+  :config (counsel-projectile-mode))
+
+
+
