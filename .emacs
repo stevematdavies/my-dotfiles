@@ -103,8 +103,7 @@
 (use-package emmet-mode
   :ensure t)
 
-(use-package web-mode
-  :ensure t)
+(use-package web-mode :ensure t)
   (add-to-list 'auto-mode-alist '("\\.html$" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.css?\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.js\\'" .web-mode))
@@ -113,3 +112,14 @@
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" .web.mode))
 (add-hook 'web-mode-hook 'emmet-mode)
 
+
+;; Projectile
+(use-package projectile :ensure t
+  :diminish projectile-mode
+  :config (projectile-mode)
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
+  :init
+  (when (file-directory-p "~/Projects")
+    (setq projectile-project-search-path '("~/Projects")))
+  (setq projectile-switch-project-action #'projectile-dired))
