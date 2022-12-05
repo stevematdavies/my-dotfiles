@@ -113,3 +113,6 @@
   ([remap describe-command] . helpful-command)
   ([remap describe-variable] . counsel-describe-variable)
   ([remap describe-key] . helplful-key))
+
+;; Icons!!
+(use-package all-the-icons)
