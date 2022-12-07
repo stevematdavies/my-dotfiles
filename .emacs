@@ -2,8 +2,13 @@
 (with-eval-after-load 'flycheck
   (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 
+
+;; To open files in a running instance of Emacs
+(server-start)
+
 (setq inhibit-startup-message t)
 
+(setq global-visual-line-mode t)
 (scroll-bar-mode -1)
 (tooltip-mode -1)
 (set-fringe-mode 10)
@@ -14,6 +19,23 @@
 (set-face-attribute 'default nil :font "Source Code Pro" :height 116)
 (column-number-mode) ;; Set column numbers
 (global-display-line-numbers-mode t)
+
+;; Ensure buffer droppings go to tempfile
+ (setq backup-directory-alist
+          `((".*" . ,temporary-file-directory)))
+    (setq auto-save-file-name-transforms
+          `((".*" ,temporary-file-directory t)))
+
+;; downcase and Upcase
+(put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
+
+;; menu item File -> Open recent.
+(require 'recentf)
+(recentf-mode 1)
+
+;;  configures Emacs so that files deleted via Emacs are moved to the Recycle bin
+(setq delete-by-moving-to-trash t)
 
 ;; set default browser for links and things
 (setq browse-url-browser-function 'browse-url-firefox)
