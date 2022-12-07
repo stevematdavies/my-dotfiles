@@ -1,3 +1,7 @@
+
+(with-eval-after-load 'flycheck
+  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+
 (setq inhibit-startup-message t)
 
 (scroll-bar-mode -1)
@@ -121,7 +125,12 @@
 (use-package all-the-icons)
 
 (use-package emmet-mode
-  :ensure t)
+  :ensure t
+  :init
+  (add-hook 'css-mode-hook 'emmet-mode)
+  (add-hook 'sgml-mode-hook 'emmet-mode)
+  :config
+  (setq-default emmet-move-cursor-between-quote t))
 
 (use-package web-mode :ensure t)
 
@@ -334,3 +343,38 @@
   :ensure t)
 
 (use-package org)
+
+;; IDE specifics
+
+
+(use-package company
+  :ensure t
+  :hook ((after-init . global-company-mode)))
+
+;; Typescript
+
+(setq tide-node-executable "~/.asdf/shims/node")
+
+(use-package add-node-modules-path
+  :ensure t
+  :hook ((typescript-mode . add-node-modules-path)))
+
+(use-package typescript-mode
+  :ensure t
+  :config
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode)))
+
+(use-package tide
+  :ensure t
+  :after (typescript-mode company flycheck)
+  :hook ((typescript-mode . tide-setup)
+	 (typescript-mode . tide-hl-identifier-mode))
+  :config
+  (flycheck-add-next-checker 'typescript-tide 'javascript-eslint))
+
+(use-package flycheck
+  :ensure t
+  :hook ((after-init . global-flycheck-mode)))
+
+(use-package impatient-mode
+  :ensure t)
