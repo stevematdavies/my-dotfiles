@@ -24,11 +24,11 @@
 ;; -----------------------------------------------------------------
 
 ;; Some Editor sytling
-(set-face-attribute 'default nil :font "Fira Code" :height efs/default-font-size)
+(set-face-attribute 'default nil :font "Fira Mono" :height efs/default-font-size)
 ;; -----------------------------------------------------------------
 
 ;; Set the fixed pitch face
-(set-face-attribute 'fixed-pitch nil :font "Fira Code" :height efs/default-font-size)
+(set-face-attribute 'fixed-pitch nil :font "Fira Mono" :height efs/default-font-size)
 ;; -----------------------------------------------------------------
 
 ;; Better meta
@@ -307,7 +307,10 @@
 (use-package lsp-ui
   :hook (lsp-mode . lsp-ui-mode)
   :custom
-  (setq lsp-ui-doc-position 'bottom))
+  (setq lsp-ui-sideline-enable t)
+  (setq lsp-ui-sideline-show-hover nil)
+  (setq lsp-ui-doc-position bottom)
+  (lsp-ui-doc-show))
 ;; -----------------------------------------------------------------
 
 ;; Treemacs intergration
@@ -343,3 +346,10 @@
   :config
   (setq typescript-indent-level 2))
 ;; -----------------------------------------------------------------
+(put 'upcase-region 'disabled nil)
+
+;; Easier commenting
+(use-package evil-nerd-commenter
+  :bind ("M-/" . evilnc-comment-or-uncomment-lines))
+;; -----------------------------------------------------------------
+
