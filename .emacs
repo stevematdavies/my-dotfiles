@@ -4,8 +4,8 @@
 ;; -----------------------------------------------------------------
 
 ;; Gloals for font
-(defvar efs/default-font-size 116)
-(defvar efs/default-variable-font-size 116)
+(defvar efs/default-font-size 130)
+(defvar efs/default-variable-font-size 130)
 
 ;; Clear the clutter
 (setq inhibit-startup-message t)
@@ -17,6 +17,16 @@
 (tool-bar-mode -1)
 (setq visible-bell t)
 ;; -----------------------------------------------------------------
+
+
+;; Get Scandi keys working properly
+(set-input-mode (car (current-input-mode))
+		(nth 1 (current-input-mode))
+		'accept-8bit-input)
+
+;; ------------------------------------------------------------------INPUT)
+
+
 
 ;; add a place for extra themes
 (add-to-list 'custom-theme-load-path
@@ -47,8 +57,61 @@
 (setq delete-by-moving-to-trash t)
 ;; -----------------------------------------------------------------
 
-;; Makesure we use good 'ol Firefox for browser links!
-(setq browse-url-browser-function 'browse-url-firefox)
+;; Set line numbers, but only for programming modes
+; Disable line numbers for some modes
+(dolist (mode '(org-mode-hook
+                term-mode-hook
+                shell-mode-hook
+	        treemacs-mode-hook
+		cider-repl-hook
+		cider-repl
+                eshell-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+  ;; -----------------------------------------------------------------
+
+;; Some global keybindings
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+(global-set-key (kbd "C-M-j") 'counsel-switch-buffer)
+;; -------------------------------
+
+
+;; Clipboard
+(setq x-select-enable-clipboard t)
+(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
+
+
+;; add a place for extra themes
+(add-to-list 'custom-theme-load-path
+	     (file-name-as-directory "~/.emacs.d/themes"))
+;; -----------------------------------------------------------------
+
+;; Some Editor sytling
+(set-face-attribute 'default nil :font "Fira Mono" :height efs/default-font-size)
+;; -----------------------------------------------------------------
+
+;; Set the fixed pitch face
+(set-face-attribute 'fixed-pitch nil :font "Fira Mono" :height efs/default-font-size)
+;; -----------------------------------------------------------------
+
+;; Variable pitch
+(set-face-attribute 'variable-pitch nil :font "Cantarell" :height efs/default-font-size :weight 'regular)
+;; -----------------------------------------------------------------
+
+ 
+;; Better meta
+(column-number-mode) ;; set column numbers
+(global-display-line-numbers-mode t)
+;; -----------------------------------------------------------------
+
+;; ensure buffer droppings go to tempfile
+ (setq backup-directory-alist
+          `((".*" . ,temporary-file-directory)))
+    (setq auto-save-file-name-transforms
+          `((".*" ,temporary-file-directory t)))
+;; -----------------------------------------------------------------
+
+;;  configures emacs so that files deleted via emacs are moved to the recycle bin
+(setq delete-by-moving-to-trash t)
 ;; -----------------------------------------------------------------
 
 ;; Set line numbers, but only for programming modes
@@ -56,7 +119,9 @@
 (dolist (mode '(org-mode-hook
                 term-mode-hook
                 shell-mode-hook
-	              treemacs-mode-hook
+	        treemacs-mode-hook
+		cder-repl-hook
+		cider-repl
                 eshell-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
   ;; -----------------------------------------------------------------
@@ -66,11 +131,15 @@
 (global-set-key (kbd "C-M-j") 'counsel-switch-buffer)
 ;; -----------------------------------------------------------------
 
-;; Setting up 'use-package' for better package installing
+
+;; Firefox For Links
+(setq Browse-Url-Browser-Function #'Browse-Url-Firefox)
+
+;; Setting Up 'Use-Package' For Better Package Installing
 (require 'package)
 
 ;; > Repositories
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+(setq Package-archives '(("melpa" . "https://melpa.org/packages/")
 			 ("melpa-stable" . "https://stable.melpa.org/packages/")
                          ("org" . "https://orgmode.org/elpa/")
                          ("elpa" . "https://elpa.gnu.org/packages/")))
@@ -85,6 +154,11 @@
 (require 'use-package)
 (setq use-package-always-ensure t)
 ;; -----------------------------------------------------------------
+
+;; Lets stop that pesky mouse!
+(use-package disable-mouse)
+(global-disable-mouse-mode nil)
+
 
 ;; Nice simple theme
 (use-package vscode-dark-plus-theme
@@ -149,7 +223,8 @@
 ;; -----------------------------------------------------------------
 
 ;; all-the-icons for a clean status bar
-(use-package all-the-icons)
+(use-package all-the-icons
+  :if (display-graphic-p))
 ;; -----------------------------------------------------------------
 
 ;; Emmet Magic
@@ -224,9 +299,12 @@
 
 ;; The one and only ORG mode!
 (defun efs/org-mode-setup ()
-  (org-indent-mode)
+  (org-indent-mode 1)
   (variable-pitch-mode 1)
-  (visual-line-mode 1))
+  (visual-line-mode 1)
+  (auto-fill-mode 0)
+  (setq evil-auto-indent nil))
+
 
 ;; > Org!
 (use-package org
@@ -239,7 +317,48 @@
   :after org
   :hook (org-mode . org-bullets-mode)
   :custom
-  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+  (org-bullets-bullet-list '("◉" "○" "●" "◆" "✚" "✿" "✸" )))
+
+
+;; Replace list-hyphen with a dot
+(font-lock-add-keywords 'org-mode
+			'(("^ *\\([-]\\)"
+			   (0 (prog1 () (compose-region (match-beginning 1)(match-end 1) "•"))))))
+
+
+
+
+;; Heading sizes in org mode
+(dolist (face '((org-level-1 . 1.2)
+		(org-level-2 . 1.1)
+		(org-level-3 . 1.05)
+		(org-level-4 . 1.0)
+		(org-level-5 . 1.1)
+		(org-level-6 . 1.1)
+		(org-level-7 . 1.1)
+		(org-level-8 . 1.1)))
+  (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+
+
+
+;; Adjust pitch font display elements
+;; Ensure that anything that should be fixed-pitch in Org files appears that way
+    (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-table nil  :inherit 'fixed-pitch)
+    (set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
+    (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
+    (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
+
+    ;; Get rid of the background on column views
+    (set-face-attribute 'org-column nil :background nil)
+    (set-face-attribute 'org-column-title nil :background nil)
+
+;; -----------------------------------------------------------------
+
 
 ;; > some filler
 (defun efs/org-mode-visual-fill ()
@@ -263,6 +382,7 @@
 (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 (add-to-list 'org-structure-template-alist '("py" . "src python"))
+
 ;; -----------------------------------------------------------------
 
 ;; Super charge org-
@@ -351,5 +471,42 @@
 ;; Easier commenting
 (use-package evil-nerd-commenter
   :bind ("M-/" . evilnc-comment-or-uncomment-lines))
+;; -----------------------------------------------------------------
+
+
+;; Clojure and Cider setup
+(use-package cider
+  :ensure t
+  :config
+  (setq cider-repl-result-prefix "=> "
+	cider-eval-result-prefix ""
+	cider-connection-message-fn nil
+	cider-repl-prompt-function #'opts/cider-repl-prompt
+	cider-use-overlays nil
+	cider-repl-display-help-banner nil))
+
+(defun opts/cider-repl-prompt (namespace)
+   "Return a prompt string that mentions NAMESPACE."
+   (format "%s " (cider-abbreviate-ns namespace)))
+
+(use-package clojure-mode
+  :ensure t
+  :config (global-prettify-symbols-mode t)
+  :init (defconst clojure--prettify-symbols-alist
+	   '(("fn" . ?λ)
+	     ("__" . ?⁈))))
+
+(use-package color-identifiers-mode
+  :hook (clojure-mode . color-identifiers-mode))
+
+(use-package smartparens
+  :diminish smartparens-mode
+  :init
+  (require 'smartparens-config)
+  :config
+  (smartparens-global-mode t)
+  (show-smartparens-global-mode t)
+  (setq sp-show-pair-from-inside t))
+
 ;; -----------------------------------------------------------------
 
